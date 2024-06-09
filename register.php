@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header("Location:./confirm.php?id=".$userId['id']."");
     }
 }
+$clientTT = new user();
 ?>
 
 <?php
@@ -18,13 +19,14 @@ include_once 'classes/cart.php';
 $cart = new cart();
 $totalQty = $cart->getTotalQtyByUserId();
 ?>
+
 <?php
   require_once 'google-api/vendor/autoload.php';
 
   // Lấy những giá trị này từ https://console.google.com
   $client_id = '195730806723-lbioafvnql787ss4br9ntd0e5lfpvssm.apps.googleusercontent.com'; 
   $client_secret = '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';
-  $redirect_uri = 'http://localhost:800/bookstore-client/page/login/index.php';
+  $redirect_uri = 'http://localhost:800/bookstore/register.php';
 
   //Thông tin kết nói database
   $db_username = "root"; //Database Username
@@ -54,24 +56,25 @@ $totalQty = $cart->getTotalQtyByUserId();
       if ($mysqli->connect_error) {
           die('Error : ('. $mysqli->connect_errno .') '. $mysqli->connect_error);
       }
+      $id = substr($user->id, 0, 8);
 
       //Kiểm tra xem nếu user này đã tồn tại, sau đó nên login tự động
-      $result = $mysqli->query("SELECT COUNT(userID) as usercount FROM user WHERE userID=$user->id");
+      $result = $mysqli->query("SELECT COUNT(id) as usercount FROM users WHERE id=$id");
       $user_count = $result->fetch_object()->usercount; //will return 0 if user doesn't exist
 
       //show user picture
-      echo '<img src="'.$user->picture.'" style="float: right;margin-top: 33px;" />';
-
+    //   echo '<img src="'.$user->picture.'" style="float: right;margin-top: 33px;" />';
       if($user_count) // Nếu user tồn tại thì show thông tin hiện có
       {
-         $result = true;
+         $login_check = $clientTT->login($user->email, '1');
       }
       else //Ngược lại tạo mới 1 user vào database
       { 
-          $statement = $mysqli->prepare("INSERT INTO users (username, password, fullname, email, role) VALUES (?,?,?,?,?,1)");
-          $statement->bind_param('issss', $user->email, $user->email, $user->name, $user->email);
+          $statement = $mysqli->prepare("INSERT INTO users (id, email, password, fullname, status, isConfirmed, role_id) VALUES (?,?,'1',?,1,1,2)");
+          $statement->bind_param('sss',$id, $user->email, $user->name);
           $statement->execute();
           echo $mysqli->error;
+          $login_check = $clientTT->login($user->email, '1');
         }
         header("location:index.php");
       exit;
@@ -81,9 +84,9 @@ $totalQty = $cart->getTotalQtyByUserId();
   if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
       $client->setAccessToken($_SESSION['access_token']);
     } else { // Ngược lại tạo 1 link để login
-      $authUrl = $client->createAuthUrl();
-      // header("location:/bookstore-client/index.php");
-  }
+        // header("location:/bookstore-client/index.php");
+    }
+    $authUrl = $client->createAuthUrl();
 ?>
 
 <!DOCTYPE html>

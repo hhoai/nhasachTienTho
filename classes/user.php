@@ -86,13 +86,13 @@ class user
 				$mail->SMTPSecure = "tls";
 				$mail->Port       = 587;
 				$mail->Host       = "smtp.gmail.com";
-				$mail->Username   = "nguyenthdat7680@gmail.com";
-				$mail->Password   = "udfhechjekxifivj";
+				$mail->Username   = "noreply91203@gmail.com";
+				$mail->Password   = "jyoxteofyiygapti";
 
 				$mail->IsHTML(true);
 				$mail->CharSet = 'UTF-8';
 				$mail->AddAddress($email, "recipient-name");
-				$mail->SetFrom("nguyenthdat7680@gmail.com", "HB-shop");
+				$mail->SetFrom("noreply91203@gmail.com", "Tien Tho BookStore");
 				$mail->Subject = "Xác nhận email tài khoản - HB-shop";
 				$mail->Body = "<h3>Cảm ơn bạn đã đăng ký tài khoản tại website HB-shop </h3></br>Đây là mã xác minh tài khoản của bạn: " . $captcha . "";
 
@@ -202,7 +202,7 @@ class user
 	public function confirm($userId, $captcha)
 	{
 		$query = "SELECT * FROM users WHERE id = '$userId' AND captcha = '$captcha' LIMIT 1";
-		$mysqli_result = true;
+		$mysqli_result = $this->db->select($query);
 		if ($mysqli_result) {
 			// Update comfirmed
 			$sql = "UPDATE users SET isConfirmed = 1 WHERE id = $userId";

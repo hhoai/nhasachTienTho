@@ -39,8 +39,8 @@ $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
 $orderInfo = "Thanh toán qua MoMo";
 $amount = $_POST['thanhtoan'];
 $orderId = time() . "";
-$redirectUrl = "http://localhost/HB-shop/order.php";
-$ipnUrl = "http://localhost/HB-shop/order.php";
+$redirectUrl = "http://localhost:800/bookstore/order.php";
+$ipnUrl = "http://localhost:800/bookstore/order.php";
 $extraData = "";
 $requestId = time() . "";
 $requestType = "payWithATM";
@@ -72,3 +72,13 @@ $jsonResult = json_decode($result, true);  // decode json
 
 header('Location: ' . $jsonResult['payUrl']);
 ?>
+
+
+
+<!--
+  test the
+  9704000000000018
+  nguyen van a
+  03/07
+  OTP
+-->
